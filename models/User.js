@@ -1,6 +1,8 @@
 const { Schema, model } = require("mongoose");
 const thoughtsSchema = require("./Thought");
 
+
+//TODO CREATE a VIRTUAL called "friendCount" that retreives the length of a users friend array field on query
 // Schema to create Student model
 const userSchema = new Schema(
   {
@@ -19,7 +21,7 @@ const userSchema = new Schema(
         "Please fill a valid email address",
       ],
     },
-    // thoughts: [thoughtsSchema],
+    thoughts: [thoughtsSchema],
     friends: {
       type: [{ type: Schema.Types.ObjectId, ref: "User" }],
       default: []
