@@ -1,5 +1,7 @@
 const { User } = require("../models");
 
+
+//TODO NEED to add a way to check validation if user already has that friend
 module.exports = {
   async addFriend(req, res) {
     try {
