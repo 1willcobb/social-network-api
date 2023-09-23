@@ -1,11 +1,10 @@
-const { ObjectId } = require("mongoose").Types;
 const { User } = require("../models");
 
 module.exports = {
   // Get all students
   async getAllUsers(req, res) {
     try {
-      const users = await User.find({});
+      const users = await User.find({}).populate("friends");
 
       res.status(200).json(users);
     } catch (err) {
@@ -14,10 +13,11 @@ module.exports = {
     }
   },
 
+  //Get Single user by ID passed in params
   async getSingleUser(req, res) {
     try {
-      const id = req.params.userID;
-      const user = await User.findById(id);
+      const id = req.params.userId;
+      const user = await User.findById(id).populate("friends");
 
       res.status(200).json(user);
     } catch (err) {
@@ -28,8 +28,7 @@ module.exports = {
 
   async updateSingleUser(req, res) {
     try {
-      const id = req.params.userID;
-
+      const id = req.params.userId;
       const { username, email } = req.body;
 
       if (!username && !email) {
@@ -59,6 +58,35 @@ module.exports = {
       console.log(updatedUser);
 
       res.status(200).json(updatedUser);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  },
+
+  async createUser(req, res) {
+    try {
+      console.log("Entered Create User");
+      const { username, email } = req.body;
+
+      const newUser = await User.create({ username, email });
+      console.log(newUser);
+
+      res.status(200).json(newUser);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  },
+
+  async deleteUser(req, res) {
+    try {
+      const id = req.params.userId;
+
+      const deletedUser = await User.deleteOne({ _id: id });
+      console.log(deletedUser);
+
+      res.status(200).json(deletedUser);
     } catch (err) {
       console.log(err);
       return res.status(500).json(err);

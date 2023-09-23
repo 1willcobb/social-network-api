@@ -20,7 +20,10 @@ const userSchema = new Schema(
       ],
     },
     // thoughts: [thoughtsSchema],
-    friends: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    friends: {
+      type: [{ type: Schema.Types.ObjectId, ref: "User" }],
+      default: []
+    }
   },
   {
     toJSON: {
@@ -28,8 +31,6 @@ const userSchema = new Schema(
     },
   }
 );
-
-
 
 const User = model("User", userSchema);
 
