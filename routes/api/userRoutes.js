@@ -8,7 +8,7 @@ const {
 } = require("../../controllers/userController");
 
 const {
-  addFriend
+  addFriend, deleteFriend
 } = require("../../controllers/friendController")
 
 //  get all users
@@ -28,7 +28,7 @@ router
 
 //TODO add (post)a new friend to users friend list
 //TODO DElete a friend from users friend list
-router.route("/:userId/friends/:friendId").put(addFriend);
+router.route("/:userId/friends/:friendId").put(addFriend).delete(deleteFriend);
 
 // .delete(deleteUser);
 
