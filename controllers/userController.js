@@ -66,8 +66,8 @@ module.exports = {
 
   async createUser(req, res) {
     try {
-      console.log("Entered Create User");
       const { username, email } = req.body;
+      console.log(username + " " + email)
 
       const newUser = await User.create({ username, email });
       console.log(newUser);
