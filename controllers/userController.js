@@ -1,9 +1,10 @@
-const { User } = require("../models");
+const { User } = require("../models/User");
 
 module.exports = {
   // Get all students
   async getAllUsers(req, res) {
     try {
+      console.log("Getting All Users")
       const users = await User.find({}).populate("friends");
 
       res.status(200).json(users);

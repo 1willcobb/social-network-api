@@ -1,8 +1,6 @@
-const mongoose = require("mongoose")
 const { Schema, model } = require("mongoose");
-const thoughtsSchema = require("./Thought");
 
-//TODO CREATE a VIRTUAL called "friendCount" that retreives the length of a users friend array field on query
+
 // Schema to create Student model
 const userSchema = new Schema(
   {
@@ -40,8 +38,9 @@ const userSchema = new Schema(
 
 const User = model("User", userSchema);
 
+//CREATE a VIRTUAL called "friendCount" that retreives the length of a users friend array field on query
 userSchema.virtual('friendCount').get(function(){
   return this.friends.length
 })
 
-module.exports = User;
+module.exports = {User};
