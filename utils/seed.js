@@ -8,7 +8,7 @@ connection.once('open', async () => {
     // Delete the collections if they exist
     let userCheck = await connection.db.listCollections({ name: 'users' }).toArray();
     if (userCheck.length) {
-      await connection.dropCollection('users');
+      await connection.dropDatabase('socialdb');
     }
 
   // Create empty array to hold the students

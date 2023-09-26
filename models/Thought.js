@@ -61,15 +61,6 @@ thoughtsSchema.virtual("reactionCount").get(function () {
   return this.reactions.length;
 });
 
-const thought = new Thought({
-  thoughtText: "Thinking",
-  username: "yub",
-  reactions: [
-    {
-      reactionBody: "That is a great thought",
-      username: "yub",
-    },
-  ],
-});
+
 
 module.exports = Thought;
