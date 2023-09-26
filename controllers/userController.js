@@ -1,11 +1,12 @@
 const { User } = require("../models/User");
+const { Thought } = require("../models/Thought");
 
 module.exports = {
   // Get all students
   async getAllUsers(req, res) {
     try {
-      console.log("Getting All Users")
-      const users = await User.find({}).populate("friends");
+      console.log("Getting All Users");
+      const users = await User.find({});
 
       res.status(200).json(users);
     } catch (err) {
@@ -18,7 +19,14 @@ module.exports = {
   async getSingleUser(req, res) {
     try {
       const id = req.params.userId;
+      console.log(`Getting single User with id ${id}`);
       const user = await User.findById(id).populate("friends");
+
+      // find thoughts from the users based on username
+      const thoughts = await Thought.find({ username: user.username });
+
+      // if there are thoughts add them to the list, if not skip this step
+      thoughts && (user.thoughts = thoughts);
 
       res.status(200).json(user);
     } catch (err) {
@@ -68,7 +76,7 @@ module.exports = {
   async createUser(req, res) {
     try {
       const { username, email } = req.body;
-      console.log(username + " " + email)
+      console.log(username + " " + email);
 
       const newUser = await User.create({ username, email });
       console.log(newUser);

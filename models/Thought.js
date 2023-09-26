@@ -62,4 +62,13 @@ thoughtsSchema.virtual("reactionCount").get(function () {
   return this.reactions.length;
 });
 
+Thought.create({
+  thoughtText: "Here is my first thoughts",
+  username: 'ygjhfgfugfcuf'
+},
+{
+  thoughtText: "thought 2!!!",
+  username: 'yub'
+})
+
 module.exports = {Thought};

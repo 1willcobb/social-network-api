@@ -1,13 +1,17 @@
 const router = require("express").Router();
-const { getAllThoughts } = require("../../controllers/thoughtController");
-//TODO Get all thoughts
+const {
+  getAllThoughts,
+  getSingleThought,
+} = require("../../controllers/thoughtController");
+
+// Get all thoughts
 router.route("/").get(getAllThoughts);
 
-//TODO Get a single thought by ID
+// Get a single thought by ID
 //TODO POST a new thought, and push that id to the associated user's thoughts array
 //TODO PUT update thought by ID
 //TODO Delete thought by ID
-router.route("/:thoughtId");
+router.route("/:thoughtId").get(getSingleThought);
 
 //TODO post a reaction stored in a single thoughts reaction array field
 //TODO delete and remove reaction from reactionId value

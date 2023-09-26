@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-
+const thoughtSchema = require
 
 // Schema to create Student model
 const userSchema = new Schema(
@@ -19,10 +19,7 @@ const userSchema = new Schema(
         "Please fill a valid email address",
       ],
     },
-    thoughts: {
-      type: [{ type: Schema.Types.ObjectId, ref: "Thought" }],
-      default: [],
-    },
+    thoughts: [thoughtSchema]
     friends: {
       type: [{ type: Schema.Types.ObjectId, ref: "User" }],
       default: [],
@@ -31,7 +28,7 @@ const userSchema = new Schema(
   {
     toJSON: {
       getters: true,
-      virtuals: true
+      virtuals: true,
     },
   }
 );
@@ -39,8 +36,8 @@ const userSchema = new Schema(
 const User = model("User", userSchema);
 
 //CREATE a VIRTUAL called "friendCount" that retreives the length of a users friend array field on query
-userSchema.virtual('friendCount').get(function(){
-  return this.friends.length
-})
+userSchema.virtual("friendCount").get(function () {
+  return this.friends.length;
+});
 
-module.exports = {User};
+module.exports = { User };
