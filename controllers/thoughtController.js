@@ -33,40 +33,41 @@ module.exports = {
     }
   },
 
-  async createNewThought(req,res) {
+  async createNewThought(req, res) {
     try {
-      const {thoughtText, username} = req.body
-      console.log("creating new thought...")
+      const { thoughtText, username } = req.body;
+      console.log("creating new thought...");
 
-      console.log(username)
+      console.log(username);
       // Check the data for an existing username
-      const user = await User.findOne({username: username})
+      const user = await User.findOne({ username: username });
 
-      if(!user) {
-        console.log("Canceled New Thought: No user found to create thought")
-        return res.status(404).json({message: "No user found to create thought"})
-      } 
+      if (!user) {
+        console.log("Canceled New Thought: No user found to create thought");
+        return res
+          .status(404)
+          .json({ message: "No user found to create thought" });
+      }
 
       const newThought = await Thought.create({
-        "thoughtText": thoughtText,
-        "username": username,
-      })
+        thoughtText: thoughtText,
+        username: username,
+      });
 
-      console.log(user.thoughts)
+      console.log(user.thoughts);
 
-      user.thoughts.push(newThought._id)
+      user.thoughts.push(newThought._id);
 
-      console.log(user.thoughts)
+      console.log(user.thoughts);
 
-      await user.save()
+      await user.save();
 
+      console.log(newThought);
 
-      console.log(newThought)
-      
       res.status(200).json(newThought);
     } catch (err) {
       console.log(err);
       return res.status(500).json(err);
     }
-  }
+  },
 };

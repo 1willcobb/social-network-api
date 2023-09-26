@@ -104,11 +104,10 @@ module.exports = {
       const id = req.params.userId;
       console.log(`Deleting User id: ${id}`);
 
-      const {username} = await User.findOne({_id: id})
+      const { username } = await User.findOne({ _id: id });
 
-
-      const deletedThoughts = await Thought.deleteMany({username: username})
-      console.log(deletedThoughts)
+      const deletedThoughts = await Thought.deleteMany({ username: username });
+      console.log(deletedThoughts);
 
       const deletedUser = await User.deleteOne({ _id: id });
       console.log(deletedUser);

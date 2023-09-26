@@ -47,4 +47,4 @@ userSchema.virtual("thoughtCount").get(function () {
   return this.thoughts.length;
 });
 
-module.exports =  User;
+module.exports = User;
