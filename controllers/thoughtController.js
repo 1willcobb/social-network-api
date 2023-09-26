@@ -1,4 +1,4 @@
-const { Thought } = require("../models/Thought");
+const { Thought } = require("../models");
 
 module.exports = {
   async getAllThoughts(req, res) {
@@ -32,4 +32,24 @@ module.exports = {
       return res.status(500).json(err);
     }
   },
+
+  async createNewThought(req,res) {
+    try {
+      const {thoughtText, username, userId} = req.body
+      console.log("creating new thought...")
+
+      const newThought = await Thought.create({
+        "thoughtText": thoughtText,
+        "username": username,
+        "userId": userId
+      })
+
+      console.log(newThought)
+      
+      res.status(200).json(newThought);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  }
 };
