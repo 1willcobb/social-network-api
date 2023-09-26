@@ -14,10 +14,6 @@ const reactionSchema = new Schema(
       type: String,
       required: true,
     },
-    userId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-    },
     createdAt: {
       type: Date,
       default: Date.now,
@@ -49,10 +45,6 @@ const thoughtsSchema = new Schema(
       type: String,
       required: true,
     },
-    userId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-    },
     reactions: [reactionSchema],
   },
   {
@@ -72,12 +64,10 @@ thoughtsSchema.virtual("reactionCount").get(function () {
 const thought = new Thought({
   thoughtText: "Thinking",
   username: "yub",
-  userId: "650f66e75bd2b5b03c8bae41",
   reactions: [
     {
       reactionBody: "That is a great thought",
       username: "yub",
-      userId: "650f66e75bd2b5b03c8bae41",
     },
   ],
 });
