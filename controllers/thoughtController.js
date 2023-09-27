@@ -20,11 +20,15 @@ module.exports = {
       const id = req.params.thoughtId;
       console.log(`Getting single thought with id ${id}`);
 
-      !id && res.status(404).json({ message: "No data submitted" });
+      if (!id) {
+        return res.status(404).json({ message: "No data submitted" });
+      }
 
       const singleThought = await Thought.findById(id).populate("reactions");
 
-      !singleThought && res.status(404).json({ message: "No thought found" });
+      if (!singleThought) {
+        res.status(404).json({ message: "No thought found" });
+      }
 
       res.status(200).json(singleThought);
     } catch (err) {
@@ -49,20 +53,12 @@ module.exports = {
           .json({ message: "No user found to create thought" });
       }
 
-      const newThought = await Thought.create({
-        thoughtText: thoughtText,
-        username: username,
-      });
-
-      console.log(user.thoughts);
-
-      user.thoughts.push(newThought._id);
-
-      console.log(user.thoughts);
-
-      await user.save();
-
-      console.log(newThought);
+      const newThought = await Thought.create(req.body);
+      const userUpdate = await User.findOneAndUpdate(
+        { username: username },
+        { $addToSet: { thoughts: newThought._id } },
+        { new: true }
+      );
 
       res.status(200).json(newThought);
     } catch (err) {
