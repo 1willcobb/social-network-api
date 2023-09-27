@@ -86,17 +86,88 @@ module.exports = {
       const id = req.params.thoughtId;
       const { thoughtText } = req.body;
 
-      // Check the data for an existing username
+      // Find thought and updated
       const updatedThought = await Thought.findOneAndUpdate(
         { thoughtText },
         { new: true }
       );
 
+      // check if thought was updated
       if (!updatedThought) {
-        console.log("No user found to update thought");
+        console.log("Nothing found to update thought");
         return res
           .status(404)
-          .json({ message: "No user found to update thought" });
+          .json({ message: "Nothing found to update thought" });
+      }
+
+      console.log("Success");
+      res.status(200).json(updatedThought);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  },
+
+  // Delete a single thought
+  async deleteThought(req, res) {
+    try {
+      console.log("Deleting a thought...");
+      const id = req.params.thoughtId;
+
+      // Find thought
+      const thought = await Thought.findById(id);
+
+      // if no thought, return
+      if (!thought) {
+        console.log("No thought found");
+        return res.status(404).json({ message: "No thought found" });
+      }
+
+      // find associated user and delete the thought from thoughts list before deleting the thought
+      const updatedUser = await User.findOneAndUpdate(
+        { username: thought.username },
+        { $pull: { thoughts: id } },
+        { new: true }
+      );
+
+      // if no user, return
+      if (!updatedUser) {
+        console.log("No user has this thought");
+        return res.status(404).json({ message: "No user has this thought" });
+      }
+
+      // find the thought and delete it
+      const deletedThought = await Thought.findOneAndDelete({ _id: id });
+
+      // if something went wrong, it was not deleted and return
+      if (!deletedThought) {
+        console.log("Nothing was deleted");
+        return res.status(404).json({ message: "Nothing was deleted" });
+      }
+
+      console.log("Success");
+      res.status(200).json(deletedThought);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  },
+
+  async createReaction(req, res) {
+    try {
+      console.log("creating new thought reaction...");
+      const id = req.params.thoughtId;
+
+      // update the thought array with the associated reaction
+      const updatedThought = await Thought.findOneAndUpdate(
+        { _id: id },
+        { $addToSet: { reactions: req.body } },
+        { new: true }
+      );
+
+      if (!updatedThought) {
+        console.log("No Thought Found");
+        return res.status(404).json({ message: "No Thought Found" });
       }
 
       console.log("Success");

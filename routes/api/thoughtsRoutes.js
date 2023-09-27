@@ -3,7 +3,9 @@ const {
   getAllThoughts,
   getSingleThought,
   createNewThought,
-  updateSingleThought
+  updateSingleThought,
+  deleteThought,
+  createReaction
 } = require("../../controllers/thoughtController");
 
 // Get all thoughts
@@ -11,13 +13,16 @@ const {
 router.route("/").get(getAllThoughts).post(createNewThought);
 
 // Get a single thought by ID
-
 // PUT update thought by ID
-//TODO Delete thought by ID
-router.route("/:thoughtId").get(getSingleThought).put(updateSingleThought);
+// Delete thought by ID
+router
+  .route("/:thoughtId")
+  .get(getSingleThought)
+  .put(updateSingleThought)
+  .delete(deleteThought);
 
-//TODO post a reaction stored in a single thoughts reaction array field
+// post a reaction stored in a single thoughts reaction array field
 //TODO delete and remove reaction from reactionId value
-router.route("/:thoughtId/reactions");
+router.route("/:thoughtId/reactions").post(createReaction);
 
 module.exports = router;
