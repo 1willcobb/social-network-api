@@ -5,13 +5,9 @@ connection.on("error", (err) => err);
 
 connection.once("open", async () => {
   console.log("connected");
-  // Delete the collections if they exist
-  let userCheck = await connection.db
-    .listCollections({ name: "users" })
-    .toArray();
-  if (userCheck.length) {
-    await connection.dropDatabase("socialdb");
-  }
+  // Drop the database and start fresh
+  await connection.dropDatabase("socialdb");
+
 
   // Create empty array to hold the students
   const users = [
@@ -32,8 +28,8 @@ connection.once("open", async () => {
       email: "Flub@gmail.com",
     },
     {
-      username: "Yub",
-      email: "yub@gmail.com",
+      username: "Pub",
+      email: "Pub@gmail.com",
     },
     {
       username: "Glub",
@@ -44,10 +40,12 @@ connection.once("open", async () => {
       email: "Mub@gmail.com",
     },
     {
-      username: "dub",
-      email: "dub@gmail.com",
+      username: "Dub",
+      email: "Dub@gmail.com",
     },
   ];
+
+  
 
   // Add students to the collection and await the results
   await User.collection.insertMany(users);

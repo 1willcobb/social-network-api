@@ -34,7 +34,7 @@ module.exports = {
       // check if thought was found
       if (!singleThought) {
         console.log("No thought found");
-        res.status(404).json({ message: "No thought found" });
+        return res.status(404).json({ message: "No thought found" });
       }
 
       console.log("Success");
@@ -88,6 +88,7 @@ module.exports = {
 
       // Find thought and updated
       const updatedThought = await Thought.findOneAndUpdate(
+        { _id: id },
         { thoughtText },
         { new: true }
       );
@@ -153,6 +154,7 @@ module.exports = {
     }
   },
 
+  // Create a new reaction on the thought model
   async createReaction(req, res) {
     try {
       console.log("creating new thought reaction...");
@@ -172,6 +174,41 @@ module.exports = {
 
       console.log("Success");
       res.status(200).json(updatedThought);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  },
+
+  // delete a reaction on the thought model at a specific ID
+  async deleteReaction(req, res) {
+    try {
+      console.log("Deleting a reaction...");
+      const { thoughtId, reactionId } = req.params;
+
+      // search for the element on the thought before updating
+      const thoughtWithReaction = await Thought.findOne(
+        { reactions: { $elemMatch: { _id: reactionId } } },
+        { "reactions.$": 1 }
+      );
+
+      // check if there is a reaction present on that thought
+      if (!thoughtWithReaction || thoughtWithReaction.reactions.length < 1) {
+        console.log("no thought or reaction found");
+        return res
+          .status(404)
+          .json({ message: "no thought or reaction found" });
+      }
+
+      //find associated user and delete the thought from thoughts list before deleting the thought
+      const thought = await Thought.findByIdAndUpdate(
+        thoughtId,
+        { $pull: { reactions: { _id: reactionId } } },
+        { new: true }
+      );
+
+      console.log("Success");
+      res.status(200).json(thought);
     } catch (err) {
       console.log(err);
       return res.status(500).json(err);
