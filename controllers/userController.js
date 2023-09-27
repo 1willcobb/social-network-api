@@ -4,9 +4,11 @@ module.exports = {
   // Get all students
   async getAllUsers(req, res) {
     try {
-      console.log("Getting All Users");
+      console.log("Getting All Users...");
+
       const users = await User.find({});
 
+      console.log("Success");
       res.status(200).json(users);
     } catch (err) {
       console.log(err);
@@ -19,10 +21,19 @@ module.exports = {
     try {
       const id = req.params.userId;
       console.log(`Getting single User with id ${id}`);
+
+      //find and populate user
       const user = await User.findById(id)
         .populate("friends")
         .populate("thoughts");
 
+      // check if user exists
+      if (!user) {
+        console.log("No user found");
+        return res.status(404).json({ message: "No user found" });
+      }
+
+      console.log("Success");
       res.status(200).json(user);
     } catch (err) {
       console.log(err);
@@ -30,18 +41,21 @@ module.exports = {
     }
   },
 
+  //update user email or username
   async updateSingleUser(req, res) {
     try {
+      console.log("Updating user...");
       const id = req.params.userId;
-      console.log(`Updating user: ${id}`);
       const { username, email } = req.body;
 
+      // check if username or email was submitted
       if (!username && !email) {
         return res
           .status(400)
           .json({ message: "No username or email field to update" });
       }
 
+      // create a single place to update on the condition that minimally only one was submitted
       const update = {};
       if (username) {
         update.username = username;
@@ -50,18 +64,18 @@ module.exports = {
         update.email = email;
       }
 
-      const result = await User.updateOne({ _id: id }, { $set: update });
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: id },
+        { $set: update },
+        { new: true }
+      );
 
-      // Check if a document was updated
-      if (result.nModified === 0) {
-        return res
-          .status(404)
-          .json({ message: "User not found or no changes were made" });
+      // Check if the update went through
+      if (!updatedUser) {
+        return res.status(404).json({ message: "No User found" });
       }
 
-      const updatedUser = await User.find({ _id: id });
-      console.log(updatedUser);
-
+      console.log("Success");
       res.status(200).json(updatedUser);
     } catch (err) {
       console.log(err);
@@ -72,9 +86,9 @@ module.exports = {
   // Create a new user
   async createUser(req, res) {
     try {
+      console.log("Creating new user...");
       // destructure the username and email from the json body
       const { username, email } = req.body;
-      console.log(`creating new user ${username + " " + email}`);
 
       //Check if the user exists
       const userCheck = await User.findOne({
@@ -91,6 +105,7 @@ module.exports = {
       const newUser = await User.create({ username, email });
       console.log(newUser);
 
+      console.log("Success");
       res.status(200).json(newUser);
     } catch (err) {
       console.log(err);
@@ -101,17 +116,27 @@ module.exports = {
   // Delete User
   async deleteUser(req, res) {
     try {
+      console.log("Deleting user...");
       const id = req.params.userId;
-      console.log(`Deleting User id: ${id}`);
 
-      const { username } = await User.findOne({ _id: id });
+      // find the user 
+      const user = await User.findOne({ _id: id });
 
-      const deletedThoughts = await Thought.deleteMany({ username: username });
-      console.log(deletedThoughts);
+      // check if user exists
+      if (!user) {
+        console.log("No user found");
+        return res.status(404).json({ message: "No user found" });
+      }
 
-      const deletedUser = await User.deleteOne({ _id: id });
-      console.log(deletedUser);
+      // delete thoughts associated with the user. They are stored by username
+      const deletedThoughts = await Thought.deleteMany({
+        username: user.username,
+      });
 
+      // delete user and return the deleted user to confirm
+      const deletedUser = await User.findOneAndDelete({ _id: id });
+
+      console.log("Success");
       res.status(200).json(deletedUser);
     } catch (err) {
       console.log(err);
